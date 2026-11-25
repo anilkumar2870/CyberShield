@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>CyberShield | Security Operations</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+<div class="app-container">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+
+        <div class="brand">
+            <div class="brand-icon">C</div>
+            <div>
+                <h2>CyberShield</h2>
+                <span>SECURITY PLATFORM</span>
+            </div>
+        </div>
+
+        <div class="nav-label">WORKSPACE</div>
+
+        <nav class="navigation">
+            <a href="#overview" class="nav-item active">
+                <span>▦</span> Overview
+            </a>
+
+            <a href="#discovery" class="nav-item">
+                <span>⌕</span> Network Discovery
+            </a>
+
+            <a href="#inventory" class="nav-item">
+                <span>▤</span> Asset Inventory
+            </a>
+
+            <a href="#monitoring" class="nav-item">
+                <span>◉</span> Security Monitoring
+            </a>
+
+            <a href="#history" class="nav-item">
+                <span>◷</span> Scan History
+            </a>
+
+            <a href="#reports" class="nav-item">
+                <span>▧</span> Reports
+            </a>
+        </nav>
+
+        <div class="sidebar-bottom">
+            <div class="lab-status">
+                <span class="status-dot"></span>
+                <div>
+                    <strong>LAB ENVIRONMENT</strong>
+                    <small>CyberShield is ready</small>
+                </div>
+            </div>
+
+            <div class="sidebar-footer">
+                CyberShield v1.0
+            </div>
+        </div>
+
+    </aside>
+
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
+
+        <!-- TOP HEADER -->
+        <header class="topbar">
+
+            <div>
+                <p class="breadcrumb">Workspace / Overview</p>
+                <h1>Security Overview</h1>
+            </div>
+
+            <div class="topbar-right">
+                <span class="environment-badge">
+                    <span class="status-dot"></span>
+                    LOCAL LAB
+                </span>
+
+                <div class="user-profile">
+                    <div class="avatar">CS</div>
+                    <span>Administrator</span>
+                </div>
+            </div>
+
+        </header>
+
+
+        <!-- OVERVIEW -->
+        <section id="overview">
+
+            <div class="welcome-section">
+                <div>
+                    <h2>Welcome to CyberShield</h2>
+                    <p>
+                        Unified cybersecurity assessment and
+                        network intelligence platform.
+                    </p>
+                </div>
+
+                <div class="date-label">
+                    SECURITY OPERATIONS CENTER
+                </div>
+            </div>
+
+
+            <!-- STATISTICS -->
+            <div class="stats-grid">
+
+                <div class="stat-card">
+                    <div class="stat-heading">
+                        <span>Total Devices</span>
+                        <span class="stat-icon blue">▣</span>
+                    </div>
+
+                    <h2>
+                        {{ result.total if result and not result.error else "—" }}
+                    </h2>
+
+                    <small>Discovered network devices</small>
+                </div>
+
+
+                <div class="stat-card">
+                    <div class="stat-heading">
+                        <span>Network Status</span>
+                        <span class="stat-icon green">◉</span>
+                    </div>
+
+                    <h2 class="status-text">LAB READY</h2>
+
+                    <small>Local application status</small>
+                </div>
+
+
+                <div class="stat-card">
+                    <div class="stat-heading">
+                        <span>Last Discovery</span>
+                        <span class="stat-icon purple">◷</span>
+                    </div>
+
+                    <h2 class="status-text">
+                        {{ "Completed" if result and not result.error else "Not run" }}
+                    </h2>
+
+                    <small>Current session</small>
+                </div>
+
+
+                <div class="stat-card">
+                    <div class="stat-heading">
+                        <span>Security Alerts</span>
+                        <span class="stat-icon orange">!</span>
+                    </div>
+
+                    <h2>—</h2>
+
+                    <small>Monitoring module not configured</small>
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- NETWORK DISCOVERY -->
+        <section id="discovery" class="content-panel">
+
+            <div class="section-heading">
+                <div>
+                    <span class="section-tag">NETWORK INTELLIGENCE</span>
+                    <h2>Network Discovery</h2>
+                    <p>
+                        Identify active devices within your
+                        authorized private network.
+                    </p>
+                </div>
+
+                <span class="module-badge">MODULE 01</span>
+            </div>
+
+
+            <form method="POST" class="scan-form">
+
+                <div class="input-group">
+                    <label for="network">
+                        Target Private Network
+                    </label>
+
+                    <input
+                        type="text"
+                        id="network"
+                        name="network"
+                        placeholder="192.168.56.0/24"
+                        value="{{ target }}"
+                        required
+                    >
+
+                    <small>
+                        Enter an authorized private IPv4 CIDR range.
+                        Maximum 256 addresses.
+                    </small>
+                </div>
+
+                <button type="submit" class="scan-button">
+                    <span>⌕</span>
+                    Start Discovery
+                </button>
+
+            </form>
+
+
+            {% if result %}
+
+                {% if result.error %}
+
+                    <div class="error-message">
+                        <strong>Discovery Error</strong>
+                        <p>{{ result.error }}</p>
+                    </div>
+
+                {% else %}
+
+                    <div class="success-message">
+                        Discovery completed successfully for
+                        <strong>{{ result.network }}</strong>.
+                        Found {{ result.total }} active devices.
+                    </div>
+
+                {% endif %}
+
+            {% endif %}
+
+        </section>
+
+
+        <!-- ASSET INVENTORY -->
+        <section id="inventory" class="content-panel">
+
+            <div class="section-heading">
+                <div>
+                    <span class="section-tag">ASSET MANAGEMENT</span>
+                    <h2>Discovered Devices</h2>
+                    <p>Network device inventory from the latest discovery.</p>
+                </div>
+            </div>
+
+
+            <div class="table-container">
+
+                <table>
+
+                    <thead>
+                        <tr>
+                            <th>IP ADDRESS</th>
+                            <th>MAC ADDRESS</th>
+                            <th>STATUS</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        {% if result and not result.error and result.devices %}
+
+                            {% for device in result.devices %}
+
+                                <tr>
+                                    <td class="ip-address">
+                                        {{ device.ip }}
+                                    </td>
+
+                                    <td>
+                                        {{ device.mac }}
+                                    </td>
+
+                                    <td>
+                                        <span class="device-status">
+                                            ● ACTIVE
+                                        </span>
+                                    </td>
+                                </tr>
+
+                            {% endfor %}
+
+                        {% else %}
+
+                            <tr>
+                                <td colspan="3" class="empty-state">
+                                    <div class="empty-icon">▤</div>
+                                    <strong>No devices to display</strong>
+                                    <p>
+                                        Run an authorized network
+                                        discovery to populate this table.
+                                    </p>
+                                </td>
+                            </tr>
+
+                        {% endif %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+
+        <!-- FUTURE MODULES -->
+        <section class="future-grid">
+
+            <div class="future-card" id="monitoring">
+                <span class="future-icon">◉</span>
+                <h3>Security Monitoring</h3>
+                <p>
+                    Future module for security events,
+                    traffic analysis and threat monitoring.
+                </p>
+                <span class="coming-soon">PLANNED</span>
+            </div>
+
+
+            <div class="future-card" id="history">
+                <span class="future-icon">◷</span>
+                <h3>Scan History</h3>
+                <p>
+                    Future module for tracking previous
+                    network discovery sessions.
+                </p>
+                <span class="coming-soon">PLANNED</span>
+            </div>
+
+
+            <div class="future-card" id="reports">
+                <span class="future-icon">▧</span>
+                <h3>Security Reports</h3>
+                <p>
+                    Future module for generating
+                    cybersecurity assessment reports.
+                </p>
+                <span class="coming-soon">PLANNED</span>
+            </div>
+
+        </section>
+
+
+        <!-- FOOTER -->
+        <footer class="main-footer">
+            <span>CyberShield © 2026</span>
+            <span>Unified Cybersecurity Assessment Platform</span>
+        </footer>
+
+    </main>
+
+</div>
+
+</body>
+</html>
