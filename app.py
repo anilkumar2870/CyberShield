@@ -2,6 +2,7 @@ from flask import Flask, render_template, request
 
 from modules.network_discovery import discover_network
 from modules.security_monitoring import monitor_network
+from modules.scan_history import get_scan_history, get_scan_by_id
 
 from modules.monitoring_database import (
     initialize_database,
@@ -85,6 +86,33 @@ def security_monitoring():
         events=events
     )
 
+# ==========================================
+# MODULE 03 - SCAN HISTORY
+# ==========================================
+
+@app.route("/history")
+def scan_history():
+
+    result = get_scan_history()
+
+    return render_template(
+        "history.html",
+        result=result
+    )
+
+
+@app.route("/history/<int:scan_id>")
+def scan_history_detail(scan_id):
+
+    scan = get_scan_by_id(scan_id)
+
+    if scan is None:
+        return "Scan record not found.", 404
+
+    return render_template(
+        "history_detail.html",
+        scan=scan
+    )
 
 if __name__ == "__main__":
 

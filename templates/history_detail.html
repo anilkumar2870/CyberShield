@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>CyberShield | Scan Details</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+<div class="app-container">
+
+    <main class="main-content">
+
+        <section class="module-card">
+
+            <a href="/history" class="back-link">
+                ← Back to Scan History
+            </a>
+
+            <h1>Scan Details #{{ scan.id }}</h1>
+
+            <p>Historical network discovery information.</p>
+
+            <div class="success-message">
+
+                Network: {{ scan.network }}<br>
+                Devices discovered: {{ scan.total }}<br>
+                Security events: {{ scan.event_count }}<br>
+                Scanner: {{ scan.scanner }}<br>
+                Scan time: {{ scan.monitoring_time }}
+
+            </div>
+
+            <h2>Discovered Devices</h2>
+
+            <table>
+
+                <thead>
+                    <tr>
+                        <th>IP Address</th>
+                        <th>MAC Address</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    {% for device in scan.devices %}
+
+                    <tr>
+                        <td>{{ device.ip }}</td>
+                        <td>{{ device.mac }}</td>
+                        <td>{{ device.status }}</td>
+                    </tr>
+
+                    {% else %}
+
+                    <tr>
+                        <td colspan="3">
+                            No device details available.
+                        </td>
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </section>
+
+    </main>
+
+</div>
+
+</body>
+</html>

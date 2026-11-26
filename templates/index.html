@@ -41,11 +41,11 @@
                 <span>▤</span> Asset Inventory
             </a>
 
-            <a href="#monitoring" class="nav-item">
+            <a href="{{ url_for('security_monitoring') }}" class="nav-item">
                 <span>◉</span> Security Monitoring
             </a>
 
-            <a href="#history" class="nav-item">
+            <a href="{{ url_for('scan_history') }}" class="nav-item">
                 <span>◷</span> Scan History
             </a>
 
@@ -164,9 +164,9 @@
                         <span class="stat-icon orange">!</span>
                     </div>
 
-                    <h2>—</h2>
+                    <h2>Available</h2>
 
-                    <small>Monitoring module not configured</small>
+                    <small>Security monitoring module available</small>
                 </div>
 
             </div>
@@ -327,24 +327,44 @@
         <section class="future-grid">
 
             <div class="future-card" id="monitoring">
+
                 <span class="future-icon">◉</span>
+
                 <h3>Security Monitoring</h3>
+
                 <p>
-                    Future module for security events,
-                    traffic analysis and threat monitoring.
+                    Monitor authorized network devices,
+                    detect changes and review security events.
                 </p>
-                <span class="coming-soon">PLANNED</span>
+
+                <a href="{{ url_for('security_monitoring') }}"
+                   class="scan-button">
+                   Open Security Monitoring
+                </a>
+
+                <span class="coming-soon">MODULE 02 ACTIVE</span>
+
             </div>
 
 
             <div class="future-card" id="history">
+
                 <span class="future-icon">◷</span>
+
                 <h3>Scan History</h3>
+
                 <p>
-                    Future module for tracking previous
-                    network discovery sessions.
+                    Review previous network discovery sessions,
+                    discovered devices and historical security events.
                 </p>
-                <span class="coming-soon">PLANNED</span>
+
+                <a href="{{ url_for('scan_history') }}"
+                    class="scan-button">
+                    View Scan History
+                </a>
+
+                <span class="coming-soon">MODULE 03 ACTIVE</span>
+
             </div>
 
 

@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>CyberShield | Scan History</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+<div class="app-container">
+
+    <main class="main-content">
+
+        <section class="module-card">
+
+            <a href="/" class="back-link">
+                ← Back to Security Overview
+            </a>
+
+            <h1>Scan History</h1>
+
+            <p>
+                Review previous network monitoring scans
+                and their discovered devices.
+            </p>
+
+            {% if result.success %}
+
+                <div class="success-message">
+                    Successfully retrieved
+                    {{ result.total }} scan records.
+                </div>
+
+                <div class="table-container">
+
+                    <table>
+
+                        <thead>
+                            <tr>
+                                <th>Scan ID</th>
+                                <th>Network</th>
+                                <th>Devices</th>
+                                <th>Events</th>
+                                <th>Scanner</th>
+                                <th>Scan Time</th>
+                                <th>Details</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+
+                            {% for scan in result.scans %}
+
+                            <tr>
+
+                                <td>#{{ scan.id }}</td>
+
+                                <td>{{ scan.network }}</td>
+
+                                <td>{{ scan.total }}</td>
+
+                                <td>{{ scan.event_count }}</td>
+
+                                <td>{{ scan.scanner }}</td>
+
+                                <td>{{ scan.monitoring_time }}</td>
+
+                                <td>
+                                    <a href="{{ url_for(
+                                        'scan_history_detail',
+                                        scan_id=scan.id
+                                    ) }}">
+                                        View Details
+                                    </a>
+                                </td>
+
+                            </tr>
+
+                            {% endfor %}
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+                {% if not result.scans %}
+                    <p>No previous scans available.</p>
+                {% endif %}
+
+            {% else %}
+
+                <div class="error-message">
+                    Unable to retrieve scan history:
+                    {{ result.error }}
+                </div>
+
+            {% endif %}
+
+        </section>
+
+    </main>
+
+</div>
+
+</body>
+</html>
