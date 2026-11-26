@@ -266,6 +266,7 @@
                             <th>IP ADDRESS</th>
                             <th>MAC ADDRESS</th>
                             <th>STATUS</th>
+                            <th>SCANNER</th>
                         </tr>
                     </thead>
 
@@ -289,6 +290,11 @@
                                             ● ACTIVE
                                         </span>
                                     </td>
+                                    <td>
+                                        <span class="scanner-label">
+                                            {{ result.scanner }}
+                                        </span>
+                                    </td>
                                 </tr>
 
                             {% endfor %}
@@ -296,7 +302,7 @@
                         {% else %}
 
                             <tr>
-                                <td colspan="3" class="empty-state">
+                                <td colspan="4" class="empty-state">
                                     <div class="empty-icon">▤</div>
                                     <strong>No devices to display</strong>
                                     <p>
