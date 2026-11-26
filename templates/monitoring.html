@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>CyberShield | Security Monitoring</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+    <style>
+        .monitor-container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 30px;
+        }
+
+        .monitor-card {
+            background: #14243a;
+            border: 1px solid #29415f;
+            border-radius: 16px;
+            padding: 28px;
+            margin-bottom: 25px;
+        }
+
+        .monitor-card h2 {
+            color: #ffffff;
+        }
+
+        .monitor-form {
+            display: flex;
+            gap: 15px;
+            margin-top: 25px;
+        }
+
+        .monitor-form input {
+            flex: 1;
+            min-width: 0;
+            padding: 15px;
+            border-radius: 9px;
+            border: 1px solid #39516e;
+            background: #0d192a;
+            color: white;
+        }
+
+        .monitor-form button {
+            padding: 15px 25px;
+            border: none;
+            border-radius: 9px;
+            background: #078dcc;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .monitor-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .monitor-table th,
+        .monitor-table td {
+            padding: 16px;
+            text-align: left;
+            border-bottom: 1px solid #29415f;
+            color: #d5e5f7;
+        }
+
+        .monitor-table th {
+            background: #1d3049;
+            color: #8ba9ca;
+        }
+
+        .success {
+            background: #103b2d;
+            color: #62ffad;
+            padding: 15px;
+            border-radius: 9px;
+            margin-top: 20px;
+        }
+
+        .error {
+            background: #461e29;
+            color: #ff9da7;
+            padding: 15px;
+            border-radius: 9px;
+            margin-top: 20px;
+        }
+
+        .event {
+            padding: 15px;
+            border-bottom: 1px solid #29415f;
+            color: #d5e5f7;
+        }
+
+        .event strong {
+            color: #39c5ff;
+        }
+
+        .back-link {
+            color: #39c5ff;
+            text-decoration: none;
+        }
+
+        @media (max-width: 650px) {
+            .monitor-form {
+                flex-direction: column;
+            }
+
+            .monitor-table {
+                font-size: 12px;
+            }
+
+            .monitor-table th,
+            .monitor-table td {
+                padding: 9px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="monitor-container">
+
+    <p>
+        <a class="back-link" href="/">
+            ← Back to Security Overview
+        </a>
+    </p>
+
+    <div class="monitor-card">
+
+        <h2>Security Monitoring</h2>
+
+        <p>
+            Monitor authorized private network devices
+            and identify changes in network activity.
+        </p>
+
+        <form method="POST" class="monitor-form">
+
+            <input
+                type="text"
+                name="network"
+                value="{{ target }}"
+                placeholder="192.168.56.0/24"
+                required
+            >
+
+            <button type="submit">
+                Start Monitoring
+            </button>
+
+        </form>
+
+        {% if result %}
+
+            {% if result.success %}
+
+                <div class="success">
+                    Monitoring completed successfully.
+
+                    <br>
+
+                    Network: {{ result.network }}
+
+                    <br>
+
+                    Active devices: {{ result.total }}
+
+                    <br>
+
+                    Security events detected:
+                    {{ result.event_count }}
+                </div>
+
+            {% else %}
+
+                <div class="error">
+                    Monitoring Error:
+                    {{ result.error }}
+                </div>
+
+            {% endif %}
+
+        {% endif %}
+
+    </div>
+
+
+    {% if result and result.success %}
+
+    <div class="monitor-card">
+
+        <h2>Current Network Devices</h2>
+
+        <table class="monitor-table">
+
+            <thead>
+                <tr>
+                    <th>IP Address</th>
+                    <th>MAC Address</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                {% for device in result.devices %}
+
+                <tr>
+                    <td>{{ device.ip }}</td>
+
+                    <td>{{ device.mac }}</td>
+
+                    <td>ACTIVE</td>
+                </tr>
+
+                {% else %}
+
+                <tr>
+                    <td colspan="3">
+                        No active devices found.
+                    </td>
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+    {% endif %}
+
+
+    <div class="monitor-card">
+
+        <h2>Security Events</h2>
+
+        {% for event in events %}
+
+        <div class="event">
+
+            <strong>{{ event.type }}</strong>
+
+            <br>
+
+            {{ event.message }}
+
+            <br>
+
+            Severity: {{ event.severity }}
+
+            <br>
+
+            <small>{{ event.timestamp }}</small>
+
+        </div>
+
+        {% else %}
+
+        <p>
+            No security events recorded yet.
+        </p>
+
+        {% endfor %}
+
+    </div>
+
+</div>
+
+</body>
+</html>
