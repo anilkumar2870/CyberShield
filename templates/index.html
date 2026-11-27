@@ -9,6 +9,20 @@
 
     <link rel="stylesheet"
           href="{{ url_for('static', filename='style.css') }}">
+
+    <style>
+        .alert-dashboard-link {
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+
+        .alert-dashboard-link:hover .stat-card {
+            border-color: #38bdf8;
+            transform: translateY(-2px);
+            transition: 0.2s ease;
+        }
+    </style>
 </head>
 
 <body>
@@ -56,6 +70,12 @@
             <a href="{{ url_for('security_reports') }}"
                class="nav-item">
                 <span>▧</span> Security Reports
+            </a>
+
+            <!-- MODULE 05 - SECURITY ALERTS -->
+            <a href="{{ url_for('alert_dashboard') }}"
+               class="nav-item">
+                <span>⚠</span> Security Alerts
             </a>
 
         </nav>
@@ -176,18 +196,26 @@
                 </div>
 
 
-                <div class="stat-card">
+                <!-- CLICKABLE SECURITY ALERTS CARD -->
+                <a href="{{ url_for('alert_dashboard') }}"
+                   class="alert-dashboard-link">
 
-                    <div class="stat-heading">
-                        <span>Security Alerts</span>
-                        <span class="stat-icon orange">!</span>
+                    <div class="stat-card">
+
+                        <div class="stat-heading">
+                            <span>Security Alerts</span>
+                            <span class="stat-icon orange">!</span>
+                        </div>
+
+                        <h2>View Alerts</h2>
+
+                        <small>
+                            Open Security Alert Management Dashboard
+                        </small>
+
                     </div>
 
-                    <h2>Available</h2>
-
-                    <small>Security monitoring module available</small>
-
-                </div>
+                </a>
 
             </div>
 
@@ -278,6 +306,7 @@
                 <div>
                     <span class="section-tag">ASSET MANAGEMENT</span>
                     <h2>Discovered Devices</h2>
+
                     <p>
                         Network device inventory from the latest discovery.
                     </p>
@@ -430,6 +459,30 @@
 
                 <span class="coming-soon">
                     MODULE 04 ACTIVE
+                </span>
+
+            </div>
+
+
+            <!-- MODULE 05 - SECURITY ALERTS -->
+            <div class="future-card" id="alerts">
+
+                <span class="future-icon">⚠</span>
+
+                <h3>Security Alerts</h3>
+
+                <p>
+                    View security alerts, classify threats,
+                    acknowledge incidents and manage investigation notes.
+                </p>
+
+                <a href="{{ url_for('alert_dashboard') }}"
+                   class="scan-button">
+                    Open Security Alerts
+                </a>
+
+                <span class="coming-soon">
+                    MODULE 05 ACTIVE
                 </span>
 
             </div>

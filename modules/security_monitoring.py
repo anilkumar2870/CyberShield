@@ -9,12 +9,56 @@ Features:
 2. Newly observed device detection
 3. Previously observed device disappearance detection
 4. Device identity change detection
-5. Security event generation
+5. Intelligent security event severity classification
+6. Security event generation
 """
 
 from datetime import datetime, timezone
 
 from modules.kali_connector import discover_network_on_kali
+
+
+def classify_event_severity(event_type):
+    """
+    Assign severity based on the security event type.
+
+    """
+
+    severity_rules = {
+        "CONFIRMED_UNAUTHORIZED_ACCESS": "Critical",
+        "DEVICE_IDENTITY_CHANGED": "High",
+        "NEW_DEVICE": "Medium",
+        "DEVICE_OFFLINE": "Low"
+    }
+
+    return severity_rules.get(event_type, "Medium")
+
+
+def create_security_event(
+    event_type,
+    ip,
+    mac,
+    message,
+    timestamp,
+    previous_mac=None
+):
+    """
+    Create a standardized security event.
+    """
+
+    event = {
+        "type": event_type,
+        "severity": classify_event_severity(event_type),
+        "ip": ip,
+        "mac": mac,
+        "message": message,
+        "timestamp": timestamp
+    }
+
+    if previous_mac is not None:
+        event["previous_mac"] = previous_mac
+
+    return event
 
 
 def monitor_network(target, previous_devices=None):
@@ -43,7 +87,10 @@ def monitor_network(target, previous_devices=None):
     if not result.get("success"):
         return {
             "success": False,
-            "error": result.get("error", "Network monitoring failed.")
+            "error": result.get(
+                "error",
+                "Network monitoring failed."
+            )
         }
 
     # Current successful device inventory
@@ -79,14 +126,15 @@ def monitor_network(target, previous_devices=None):
 
             if previous is None:
 
-                events.append({
-                    "type": "NEW_DEVICE",
-                    "severity": "Medium",
-                    "ip": ip,
-                    "mac": device.get("mac", "Not available"),
-                    "message": f"New device observed: {ip}",
-                    "timestamp": timestamp
-                })
+                events.append(
+                    create_security_event(
+                        event_type="NEW_DEVICE",
+                        ip=ip,
+                        mac=device.get("mac", "Not available"),
+                        message=f"New device observed: {ip}",
+                        timestamp=timestamp
+                    )
+                )
 
             else:
 
@@ -99,29 +147,34 @@ def monitor_network(target, previous_devices=None):
                     and old_mac.lower() != new_mac.lower()
                 ):
 
-                    events.append({
-                        "type": "DEVICE_IDENTITY_CHANGED",
-                        "severity": "High",
-                        "ip": ip,
-                        "mac": new_mac,
-                        "previous_mac": old_mac,
-                        "message": f"MAC address changed for device {ip}",
-                        "timestamp": timestamp
-                    })
+                    events.append(
+                        create_security_event(
+                            event_type="DEVICE_IDENTITY_CHANGED",
+                            ip=ip,
+                            mac=new_mac,
+                            previous_mac=old_mac,
+                            message=f"MAC address changed for device {ip}",
+                            timestamp=timestamp
+                        )
+                    )
 
         # Detect previously observed devices that disappeared
         for ip, device in previous_devices.items():
 
             if ip not in current_devices:
 
-                events.append({
-                    "type": "DEVICE_OFFLINE",
-                    "severity": "Low",
-                    "ip": ip,
-                    "mac": device.get("mac", "Not available"),
-                    "message": f"Previously observed device is no longer visible: {ip}",
-                    "timestamp": timestamp
-                })
+                events.append(
+                    create_security_event(
+                        event_type="DEVICE_OFFLINE",
+                        ip=ip,
+                        mac=device.get("mac", "Not available"),
+                        message=(
+                            "Previously observed device is no longer "
+                            f"visible: {ip}"
+                        ),
+                        timestamp=timestamp
+                    )
+                )
 
     return {
         "success": True,

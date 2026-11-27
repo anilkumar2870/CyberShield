@@ -115,6 +115,99 @@ def test_kali_connection():
         if ssh:
             ssh.close()
 
+# ==========================================
+# SSH AUTHENTICATION LOG RETRIEVAL
+# ==========================================
+
+def get_kali_ssh_authentication_logs():
+
+    ssh = None
+
+    try:
+
+        # Reuse the existing verified SSH connection
+        ssh = connect_to_kali()
+
+        # Retrieve only SSH service logs
+        command = [
+            "journalctl",
+            "-u", "ssh",
+            "--since", "24 hours ago",
+            "--no-pager",
+            "-o", "short-iso",
+            "--lines", "500"
+        ]
+
+        remote_command = shlex.join(command)
+
+        stdin, stdout, stderr = ssh.exec_command(
+            remote_command,
+            timeout=30
+        )
+
+        log_output = stdout.read().decode(
+            "utf-8",
+            errors="replace"
+        )
+
+        error_output = stderr.read().decode(
+            "utf-8",
+            errors="replace"
+        )
+
+        exit_code = stdout.channel.recv_exit_status()
+
+        if exit_code != 0:
+
+            return {
+                "success": False,
+                "error": (
+                    error_output.strip()
+                    or "Unable to retrieve Kali SSH logs."
+                )
+            }
+
+        return {
+            "success": True,
+            "host": KALI_HOST,
+            "source": "Kali Linux systemd journal",
+            "period": "Last 24 hours",
+            "total": len(log_output.splitlines()),
+            "logs": log_output.splitlines()
+        }
+
+    except paramiko.AuthenticationException:
+
+        return {
+            "success": False,
+            "error": "Kali SSH authentication failed."
+        }
+
+    except paramiko.SSHException as error:
+
+        return {
+            "success": False,
+            "error": f"SSH connection failed: {error}"
+        }
+
+    except (socket.timeout, TimeoutError):
+
+        return {
+            "success": False,
+            "error": "Kali SSH log retrieval timed out."
+        }
+
+    except OSError as error:
+
+        return {
+            "success": False,
+            "error": f"Connection error: {error}"
+        }
+
+    finally:
+
+        if ssh:
+            ssh.close()
 
 # ==========================================
 # NETWORK VALIDATION
