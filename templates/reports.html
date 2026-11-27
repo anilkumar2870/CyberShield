@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>CyberShield | Security Reports</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+    <style>
+
+        .reports-container {
+            max-width: 1250px;
+            margin: 40px auto;
+            padding: 25px;
+        }
+
+        .reports-card {
+            background: #14243b;
+            border: 1px solid #29415f;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 25px;
+        }
+
+        .reports-card h1,
+        .reports-card h2 {
+            color: #ffffff;
+        }
+
+        .reports-description {
+            color: #91afd2;
+            margin-bottom: 25px;
+        }
+
+        .reports-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .reports-table th {
+            background: #1d314c;
+            color: #91afd2;
+            padding: 16px;
+            text-align: left;
+        }
+
+        .reports-table td {
+            padding: 16px;
+            border-bottom: 1px solid #29415f;
+            color: #e4edfa;
+        }
+
+        .reports-table tr:hover {
+            background: #1b304b;
+        }
+
+        .report-link {
+            display: inline-block;
+            padding: 9px 16px;
+            background: #078bc9;
+            color: white;
+            text-decoration: none;
+            border-radius: 7px;
+        }
+
+        .report-link:hover {
+            background: #0875a8;
+        }
+
+        .report-success {
+            background: #103c2e;
+            border: 1px solid #206b4c;
+            color: #48ffa8;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .report-error {
+            background: #421f29;
+            color: #ff9292;
+            padding: 15px;
+            border-radius: 8px;
+        }
+
+        .back-link {
+            color: #12b8ff;
+            display: inline-block;
+            margin-bottom: 20px;
+        }
+
+        @media (max-width: 768px) {
+
+            .reports-container {
+                padding: 12px;
+            }
+
+            .reports-card {
+                padding: 15px;
+                overflow-x: auto;
+            }
+
+            .reports-table {
+                min-width: 750px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="reports-container">
+
+    <a href="{{ url_for('dashboard') }}"
+       class="back-link">
+        ← Back to Security Overview
+    </a>
+
+    <div class="reports-card">
+
+        <h1>Security Reports</h1>
+
+        <p class="reports-description">
+            Generate cybersecurity assessment reports
+            from historical network monitoring scans.
+        </p>
+
+        {% if result.success %}
+
+            <div class="report-success">
+
+                Successfully retrieved
+                {{ result.total }} historical scan records.
+
+            </div>
+
+            <h2>Available Security Reports</h2>
+
+            {% if result.reports %}
+
+                <table class="reports-table">
+
+                    <thead>
+
+                        <tr>
+                            <th>Report ID</th>
+                            <th>Network</th>
+                            <th>Devices</th>
+                            <th>Events</th>
+                            <th>Scanner</th>
+                            <th>Scan Time</th>
+                            <th>Action</th>
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        {% for report in result.reports %}
+
+                            <tr>
+
+                                <td>#{{ report.id }}</td>
+
+                                <td>{{ report.network }}</td>
+
+                                <td>{{ report.total }}</td>
+
+                                <td>{{ report.event_count }}</td>
+
+                                <td>{{ report.scanner }}</td>
+
+                                <td>{{ report.monitoring_time }}</td>
+
+                                <td>
+
+                                    <a class="report-link"
+                                       href="{{ url_for('report_detail', scan_id=report.id) }}">
+
+                                        View Report
+
+                                    </a>
+
+                                    <a class="report-link"
+                                        href="{{ url_for('download_report', scan_id=report.id) }}">
+
+                                        Download PDF
+
+                                    </a>
+
+                                </td>
+
+                            </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            {% else %}
+
+                <p>No historical scans are available yet.</p>
+
+            {% endif %}
+
+        {% else %}
+
+            <div class="report-error">
+
+                Unable to retrieve security reports.
+
+                {{ result.error }}
+
+            </div>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+</body>
+</html>
