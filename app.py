@@ -15,10 +15,15 @@ from modules.security_monitoring import monitor_network
 from modules.scan_history import get_scan_history, get_scan_by_id
 from modules.security_reports import get_available_reports
 from modules.pdf_reports import generate_security_report
-
 from modules.kali_connector import get_kali_ssh_authentication_logs
 from modules.ssh_security_analysis import analyze_ssh_logs
 from modules.ssh_threat_tracking import analyze_persistent_ssh_threats
+
+from modules.vulnerability_database import (
+    initialize_vulnerability_database
+)
+
+from modules.vulnerability_routes import vulnerability_bp
 
 from modules.monitoring_database import (
     initialize_database,
@@ -39,8 +44,10 @@ from modules.monitoring_database import (
 
 app = Flask(__name__)
 
-initialize_database()
+app.register_blueprint(vulnerability_bp)
 
+initialize_database()
+initialize_vulnerability_database()
 
 # ==========================================
 # MODULE 01 - NETWORK DISCOVERY

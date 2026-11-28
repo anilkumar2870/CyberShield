@@ -72,10 +72,16 @@
                 <span>▧</span> Security Reports
             </a>
 
-            <!-- MODULE 05 - SECURITY ALERTS -->
+            <!-- MODULE 05 -->
             <a href="{{ url_for('alert_dashboard') }}"
                class="nav-item">
                 <span>⚠</span> Security Alerts
+            </a>
+
+            <!-- MODULE 06 -->
+            <a href="{{ url_for('vulnerability.dashboard') }}"
+               class="nav-item">
+                <span>⌕</span> Vulnerability Assessment
             </a>
 
         </nav>
@@ -196,7 +202,7 @@
                 </div>
 
 
-                <!-- CLICKABLE SECURITY ALERTS CARD -->
+                <!-- SECURITY ALERTS CARD -->
                 <a href="{{ url_for('alert_dashboard') }}"
                    class="alert-dashboard-link">
 
@@ -464,7 +470,7 @@
             </div>
 
 
-            <!-- MODULE 05 - SECURITY ALERTS -->
+            <!-- MODULE 05 -->
             <div class="future-card" id="alerts">
 
                 <span class="future-icon">⚠</span>
@@ -483,6 +489,31 @@
 
                 <span class="coming-soon">
                     MODULE 05 ACTIVE
+                </span>
+
+            </div>
+
+
+            <!-- MODULE 06 -->
+            <div class="future-card" id="vulnerability-assessment">
+
+                <span class="future-icon">⌕</span>
+
+                <h3>Vulnerability Assessment</h3>
+
+                <p>
+                    Identify open ports and services, assess potential
+                    vulnerabilities, classify risks and review findings
+                    on authorized private systems.
+                </p>
+
+                <a href="{{ url_for('vulnerability.dashboard') }}"
+                   class="scan-button">
+                    Open Vulnerability Assessment
+                </a>
+
+                <span class="coming-soon">
+                    MODULE 06 ACTIVE
                 </span>
 
             </div>
